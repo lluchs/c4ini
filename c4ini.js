@@ -27,12 +27,12 @@ module.exports = function(ini) {
   var stack = [obj]
 
   var parseLine = function(line, lineNumber) {
+	var level = indentLevel(line)
 	var match
 	if (match = sectionRegex.exec(line)) {
 	  // This is a section header, create a new object.
 	  var key = match[1]
 	  // Check indentation.
-	  var level = indentLevel(line)
 	  if (level == stack.length) {
 		// One level deeper: Put the enclosing object on the stack.
 		stack.push(current)
@@ -65,6 +65,15 @@ module.exports = function(ini) {
 	  }
 	}
 	else if (match = entryRegex.exec(line)) {
+	  // Check indentation.
+	  if (level < stack.length - 1) {
+		// Reduce stack size, moving the current item.
+		stack.length = level + 2
+		current = stack[level + 1]
+	  }
+	  else if (level >= stack.length) {
+		throw new Error('Key/value item has wrong indentation in line ' + (lineNumber + 1))
+	  }
 	  var key = match[1], value = match[2]
 	  current[key] = value
 	}

@@ -121,6 +121,15 @@ vows.describe('c4ini').addBatch({
       section3: includes('section3', ['key']),
     }
   },
+  'with a dedented key following a subsection,': {
+    topic: read('value_dedentation'),
+
+    'parsing': {
+      topic: parse,
+
+      'should put foo as well as mainkey under main': includes('main', ['foo', 'mainkey'])
+    }
+  },
   'with identically named sections,': {
     topic: read('array_sections'),
 
