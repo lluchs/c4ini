@@ -1,0 +1,23 @@
+{
+  "name": "c4ini",
+  "version": "0.1.0",
+  "description": "Parser for ini files as used by Clonk masterservers.",
+  "main": "c4ini.js",
+  "scripts": {
+    "test": "vows test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lluchs/c4ini.git"
+  },
+  "keywords": [
+    "ini",
+    "clonk",
+    "parser"
+  ],
+  "author": "Lukas Werling",
+  "license": "MIT",
+  "devDependencies": {
+    "vows": "~0.7.0"
+  }
+}
