@@ -11,6 +11,8 @@ var read = function(filename) {
   }
 }
 
+var parse = function(file) { return c4ini(file) }
+
 var includes = function(section, keys) {
   return function(obj) {
     keys.forEach(function(key) {
@@ -39,7 +41,7 @@ vows.describe('c4ini').addBatch({
     topic: read('simple'),
 
     'parsing': {
-      topic: function(file) { return c4ini(file) },
+      topic: parse,
 
       'returns an object with the section': function(obj) {
 	assert.include(obj, 'section')
@@ -62,7 +64,7 @@ vows.describe('c4ini').addBatch({
     topic: read('multiple_sections'),
 
     'parsing': {
-      topic: function(file) { return c4ini(file) },
+      topic: parse,
 
       'includes three sections': function(obj) {
 	assert.include(obj, 'section1')
@@ -79,7 +81,7 @@ vows.describe('c4ini').addBatch({
     topic: read('nested_sections'),
 
     'parsing': {
-      topic: function(file) { return c4ini(file) },
+      topic: parse,
 
       'includes three top-level sections': function(obj) {
 	assert.include(obj, 'section1')
@@ -119,4 +121,24 @@ vows.describe('c4ini').addBatch({
       section3: includes('section3', ['key']),
     }
   },
+  'with identically named sections,': {
+    topic: read('array_sections'),
+
+    'parsing': {
+      topic: parse,
+      
+      'creates a main section': includes('main', ['key1', 'key2']),
+      'creates an array with the remaining sections': function(obj) {
+	assert.includes(obj, 'array')
+	assert.equal(obj.array.length, 3)
+      },
+      'correctly populates the array sections': {
+	topic: function(obj) { return obj.array },
+
+	'0': includes(0, ['key3', 'key4']),
+	'1': includes(1, ['key5', 'key6']),
+	'2': includes(2, ['key7', 'key8']),
+      }
+    }
+  }
 }).export(module)

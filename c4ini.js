@@ -45,9 +45,24 @@ module.exports = function(ini) {
 		throw new Error('Invalid indentation in line ' + (lineNumber + 1))
 	  }
 	  // Create the new object.
-	  // TODO: Array support
 	  current = {}
-	  stack[level][key] = current
+	  // Check whether there is already a section with the same name.
+	  if (stack[level][key]) {
+		// We might have to create an array.
+		if (Array.isArray(stack[level][key])) {
+		  // There is already one.
+		  stack[level][key].push(current)
+		}
+		else {
+		  // Put the object there into a new array.
+		  var tmp = stack[level][key]
+		  stack[level][key] = [tmp, current]
+		}
+	  }
+	  else {
+		// We're first.
+		stack[level][key] = current
+	  }
 	}
 	else if (match = entryRegex.exec(line)) {
 	  var key = match[1], value = match[2]
