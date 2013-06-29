@@ -2,7 +2,7 @@
 
 const INDENTSIZE = 2
 
-const sectionRegex = /^\s*\[(\w+)\]/
+const sectionRegex = /^\s*\[([\w ]+)\]/
 const entryRegex = /^\s*(\w+)=(.+)/
 
 // Returns the line's indentation level.

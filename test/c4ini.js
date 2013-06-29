@@ -44,10 +44,10 @@ vows.describe('c4ini').addBatch({
       topic: parse,
 
       'returns an object with the section': function(obj) {
-        assert.include(obj, 'section')
+        assert.include(obj, 'a section')
       },
       'the object': {
-        topic: function(obj) { return obj.section },
+        topic: function(obj) { return obj['a section'] },
 
         'includes key1': function(section) {
           assert.include(section, 'key1')
