@@ -13,11 +13,21 @@ var read = function(filename) {
 
 var parse = function(file) { return c4ini(file) }
 
+// Test function:
+// Tests for inclusion of the given keys (array) in topic[section].
 var includes = function(section, keys) {
   return function(obj) {
     keys.forEach(function(key) {
       assert.includes(obj[section], key)
     })
+  }
+}
+
+// Test function:
+// Tests for equality of topic[key] === value.
+var assertEqual = function(key, value) {
+  return function(topic) {
+    assert.strictEqual(topic[key], value)
   }
 }
 
@@ -147,6 +157,38 @@ vows.describe('c4ini').addBatch({
         '0': includes(0, ['key3', 'key4']),
         '1': includes(1, ['key5', 'key6']),
         '2': includes(2, ['key7', 'key8']),
+      }
+    }
+  },
+  'decoding values:': {
+    topic: read('decoding'),
+
+    'in the parsed output': {
+      topic: parse,
+
+      'Strings': {
+        topic: function(obj) { return obj.Strings },
+
+        'can be created without quotes': assertEqual('Unquoted', "Hello, I'm a string."),
+        'can have quotes': assertEqual('Quoted', 'This is a quoted string.'),
+        'can be quoted numbers': assertEqual('QuotedNumber', '12'),
+        'can be quoted booleans': assertEqual('QuotedBoolean', 'true'),
+        'can have octal escaping sequences': assertEqual('OctalEscaping', 'Häuser'),
+        'can have escaped backslashes': assertEqual('Backslash', "\\"),
+        'can have escaped quotes': assertEqual('Quotes', 'These are some nice "quotes"'),
+      },
+      'Numbers': {
+        topic: function(obj) { return obj.Numbers },
+
+        'are parsed': assertEqual('Forty', 40),
+        'are always in base 10': assertEqual('Four', 4),
+        'can have padding': assertEqual('TwoWithPadding', 2)
+      },
+      'Booleans': {
+        topic: function(obj) { return obj.Booleans },
+
+        'true': assertEqual('True', true),
+        'false': assertEqual('False', false),
       }
     }
   }

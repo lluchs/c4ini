@@ -22,6 +22,32 @@ var skipEmpty = function(f) {
   }
 }
 
+// Decodes the given value (string).
+var decodeValue = function(value) {
+  if (value.charAt(0) == '"' && value.charAt(value.length - 1) == '"') {
+    // Quoted string.
+    // Remove quotes.
+    value = value.slice(1, -1)
+    // Unescape quotes.
+    value = value.replace(/\\"/g, '"')
+    // Octal escape sequences.
+    value = value.replace(/\\(\d+)/g, function(str, n) {
+      return String.fromCharCode(parseInt(n, 8))
+    })
+    // Escaped backslashes.
+    value = value.replace(/\\\\/g, "\\")
+    return value
+  }
+  else if (/^\d+$/.test(value.trim()))
+    return parseInt(value, 10)
+  else if (value == 'true')
+    return true
+  else if (value == 'false')
+    return false
+  else
+    return value
+}
+
 module.exports = function(ini) {
   var obj = {}, current = null
   var stack = [obj]
@@ -75,7 +101,7 @@ module.exports = function(ini) {
         throw new Error('Key/value item has wrong indentation in line ' + (lineNumber + 1))
       }
       var key = match[1], value = match[2]
-      current[key] = value
+      current[key] = decodeValue(value)
     }
     else {
       throw new Error('Parse error in line ' + (lineNumber + 1))
