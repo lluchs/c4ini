@@ -4,7 +4,7 @@
   "description": "Parser for ini files as used by Clonk masterservers.",
   "main": "c4ini.js",
   "scripts": {
-    "test": "vows test/*"
+    "test": "vows test/*.js"
   },
   "repository": {
     "type": "git",
