@@ -68,7 +68,7 @@ module.exports = function(ini) {
         stack.length = level + 1
       }
       else if (level > stack.length) {
-        throw new Error('Invalid indentation in line ' + (lineNumber + 1))
+        parseError('Invalid indentation')
       }
       // Create the new object.
       current = {}
@@ -98,13 +98,18 @@ module.exports = function(ini) {
         current = stack[level + 1]
       }
       else if (level >= stack.length) {
-        throw new Error('Key/value item has wrong indentation in line ' + (lineNumber + 1))
+        parseError('Key/value item has wrong indentation')
       }
       var key = match[1], value = match[2]
       current[key] = decodeValue(value)
     }
     else {
-      throw new Error('Parse error in line ' + (lineNumber + 1))
+      parseError('Parse error')
+    }
+
+    // Formats a parsing error to include the line number.
+    function parseError(msg) {
+      throw new Error(msg + ' in line ' + (lineNumber + 1))
     }
   }
 
